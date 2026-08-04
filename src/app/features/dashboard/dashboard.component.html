@@ -1,5 +1,5 @@
 <div class="max-w-[1400px] mx-auto p-8 animate-fade-in-up">
-  
+
   <div class="mb-8 flex items-end justify-between flex-wrap gap-4">
     <div class="flex flex-col">
       <h1 class="text-3xl font-display font-bold text-on-surface tracking-tight mb-2">
@@ -7,7 +7,7 @@
       </h1>
       <p class="text-sm text-on-surface-variant">Aperçu en temps réel des performances LIVR'AUTO.</p>
     </div>
-    
+
     <div class="flex items-center text-xs font-medium text-on-surface-variant">
       Dernière mise à jour: Aujourd'hui, {{ currentDate | date:'HH:mm' }}
     </div>
@@ -23,77 +23,108 @@
   <ng-container *ngIf="stats() as data">
     <!-- Section 1: KPIs -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
-      <app-kpi-card title="Total Marchands" [value]="data.totalMarchands.toString()" icon="store" variation="+12%" trend="up" iconBgClass="bg-primary-container/10" iconColorClass="text-primary"></app-kpi-card>
-      <app-kpi-card title="Total Livreurs" [value]="data.totalLivreurs.toString()" icon="bike" variation="+5%" trend="up" iconBgClass="bg-tertiary-container/10" iconColorClass="text-tertiary"></app-kpi-card>
-      <app-kpi-card title="Total Commandes" [value]="data.totalCommandes.toString()" icon="shopping-bag" variation="+10%" trend="up" iconBgClass="bg-warning-container/30" iconColorClass="text-warning"></app-kpi-card>
-      <app-kpi-card title="Total Missions" [value]="data.totalMissions.toString()" icon="map" variation="+15%" trend="up" iconBgClass="bg-secondary-container/50" iconColorClass="text-secondary"></app-kpi-card>
-      <app-kpi-card title="Total Revenus" [value]="(data.totalRevenue | currency:'XOF':'symbol':'1.0-0') || '0'" icon="banknote" variation="+22%" trend="up" iconBgClass="bg-success-container/30" iconColorClass="text-success"></app-kpi-card>
+      <app-kpi-card title="Total Marchands" [value]="data.totalMarchands.toString()" icon="store" variation="+12%"
+        trend="up" iconBgClass="bg-primary-container/10" iconColorClass="text-primary"></app-kpi-card>
+      <app-kpi-card title="Total Livreurs" [value]="data.totalLivreurs.toString()" icon="bike" variation="+5%"
+        trend="up" iconBgClass="bg-tertiary-container/10" iconColorClass="text-tertiary"></app-kpi-card>
+      <app-kpi-card title="Total Commandes" [value]="data.totalCommandes.toString()" icon="shopping-bag"
+        variation="+10%" trend="up" iconBgClass="bg-warning-container/30" iconColorClass="text-warning"></app-kpi-card>
+      <app-kpi-card title="Total Missions" [value]="data.totalMissions.toString()" icon="map" variation="+15%"
+        trend="up" iconBgClass="bg-secondary-container/50" iconColorClass="text-secondary"></app-kpi-card>
+      <app-kpi-card title="Total Revenus" [value]="(data.totalRevenue | currency:'XOF':'symbol':'1.0-0') || '0'"
+        icon="banknote" variation="+22%" trend="up" iconBgClass="bg-success-container/30"
+        iconColorClass="text-success"></app-kpi-card>
     </div>
 
     <!-- Section 2: Main Layout (Charts & Actions) -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
+
       <!-- Activité (Left 2 columns) -->
-      <div class="lg:col-span-2 bg-surface-container-lowest rounded-card shadow-soft p-6 border border-border flex flex-col min-h-[400px]">
+      <div
+        class="lg:col-span-2 bg-surface-container-lowest rounded-card shadow-soft p-6 border border-border flex flex-col min-h-[400px] hover:-translate-y-1 hover:shadow-md transition-all duration-300">
         <div class="flex items-center justify-between mb-6">
           <h2 class="text-lg font-display font-semibold text-on-surface">Activité de la plateforme</h2>
           <div class="flex space-x-1 bg-surface-container p-1 rounded-lg">
-            <button class="px-3 py-1 text-xs font-medium rounded bg-surface-container-lowest text-on-surface shadow-sm">Jour</button>
-            <button class="px-3 py-1 text-xs font-medium rounded text-on-surface-variant hover:text-on-surface transition-colors">Semaine</button>
-            <button class="px-3 py-1 text-xs font-medium rounded text-on-surface-variant hover:text-on-surface transition-colors">Mois</button>
+            <button
+              class="px-3 py-1 text-xs font-medium rounded bg-surface-container-lowest text-on-surface shadow-sm">Jour</button>
+            <button
+              class="px-3 py-1 text-xs font-medium rounded text-on-surface-variant hover:text-on-surface transition-colors">Semaine</button>
+            <button
+              class="px-3 py-1 text-xs font-medium rounded text-on-surface-variant hover:text-on-surface transition-colors">Mois</button>
           </div>
         </div>
-        
-        <div class="flex-1 w-full mt-4">
-           <!-- Graphique Ligne Echarts -->
-           <div echarts [options]="lineChartOptions" class="h-64 w-full"></div>
+
+        <div class="flex-1 w-full mt-4 flex flex-col gap-6">
+          <!-- Graphique Ligne Echarts (Commandes) -->
+          <div echarts [options]="lineChartOptions" class="h-64 w-full"></div>
+          
+          <!-- Graphique Barre Echarts (Missions Terminées) -->
+          <div echarts [options]="barChartOptions" class="h-64 w-full"></div>
         </div>
       </div>
 
       <!-- Right Column -->
       <div class="flex flex-col gap-6">
-        
+
         <!-- Répartition -->
-        <div class="bg-surface-container-lowest rounded-card shadow-soft p-6 border border-border">
+        <div class="bg-surface-container-lowest rounded-card shadow-soft p-6 border border-border hover:-translate-y-1 hover:shadow-md transition-all duration-300">
           <h2 class="text-lg font-display font-semibold text-on-surface mb-6">Répartition Utilisateurs</h2>
-          <div class="h-48 w-full flex items-center justify-center">
+          <div class="h-64 w-full flex items-center justify-center">
             <!-- Pie Chart Echarts -->
-            <div echarts [options]="donutChartOptions" class="h-48 w-full"></div>
+            <div echarts [options]="donutChartOptions" class="h-64 w-full"></div>
           </div>
-          <div class="flex justify-center space-x-4 mt-4 text-xs font-medium text-on-surface-variant">
-             <div class="flex items-center"><span class="w-3 h-3 bg-primary rounded-sm mr-2"></span>Marchands</div>
-             <div class="flex items-center"><span class="w-3 h-3 bg-secondary rounded-sm mr-2"></span>Livreurs</div>
+          <div class="flex justify-center space-x-4 mt-2 text-xs font-medium text-on-surface-variant">
+            <div class="flex items-center"><span class="w-3 h-3 bg-primary rounded-sm mr-2"></span>Marchands</div>
+            <div class="flex items-center"><span class="w-3 h-3 bg-secondary rounded-sm mr-2"></span>Livreurs</div>
           </div>
         </div>
 
         <!-- Actions Rapides -->
         <div class="bg-surface-container-lowest rounded-card shadow-soft p-6 border border-border flex-1">
           <h2 class="text-lg font-display font-semibold text-on-surface mb-6">Actions Rapides</h2>
-          
+
           <div class="grid grid-cols-2 gap-3">
-            <button class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
-              <lucide-icon name="user-plus" [size]="20" class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
-              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Créer Marchand</span>
+            <button
+              class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
+              <lucide-icon name="user-plus" [size]="20"
+                class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
+              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Créer
+                Marchand</span>
             </button>
-            <button class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
-              <lucide-icon name="bike" [size]="20" class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
-              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Créer Livreur</span>
+            <button
+              class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
+              <lucide-icon name="bike" [size]="20"
+                class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
+              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Créer
+                Livreur</span>
             </button>
-            <button class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
-              <lucide-icon name="shopping-bag" [size]="20" class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
-              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Commandes</span>
+            <button
+              class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
+              <lucide-icon name="shopping-bag" [size]="20"
+                class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
+              <span
+                class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Commandes</span>
             </button>
-            <button class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
-              <lucide-icon name="map" [size]="20" class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
-              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Créer Mission</span>
+            <button
+              class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
+              <lucide-icon name="map" [size]="20"
+                class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
+              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Créer
+                Mission</span>
             </button>
-            <button class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
-              <lucide-icon name="credit-card" [size]="20" class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
-              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Paiements</span>
+            <button
+              class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
+              <lucide-icon name="credit-card" [size]="20"
+                class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
+              <span
+                class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Paiements</span>
             </button>
-            <button class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
-              <lucide-icon name="download" [size]="20" class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
-              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Export Rapport</span>
+            <button
+              class="flex flex-col items-center justify-center p-3 rounded-lg border border-border hover:bg-surface-container-low transition-colors group">
+              <lucide-icon name="download" [size]="20"
+                class="text-on-surface-variant group-hover:text-primary mb-2"></lucide-icon>
+              <span class="text-xs font-medium text-on-surface-variant group-hover:text-on-surface text-center">Export
+                Rapport</span>
             </button>
           </div>
         </div>
@@ -103,10 +134,10 @@
 
     <!-- Section 3: Alertes & Activité Récente -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-      
+
       <!-- Alertes (2 cols) -->
       <div class="lg:col-span-2 bg-surface-container-lowest rounded-card shadow-soft border border-border p-6">
-        
+
         <div class="flex items-center justify-between mb-6">
           <div class="flex items-center text-on-surface">
             <lucide-icon name="alert-triangle" [size]="24" class="text-error mr-3"></lucide-icon>
@@ -117,7 +148,8 @@
 
         <div class="space-y-4">
           <!-- Item 1 -->
-          <div class="bg-warning-container/40 rounded-card p-4 flex items-center justify-between border border-warning-container">
+          <div
+            class="bg-warning-container/40 rounded-card p-4 flex items-center justify-between border border-warning-container hover:-translate-y-1 hover:shadow-md transition-all duration-300">
             <div class="flex items-center gap-4">
               <div class="text-warning">
                 <lucide-icon name="clock" [size]="20"></lucide-icon>
@@ -127,11 +159,13 @@
                 <span class="text-xs text-on-surface-variant font-medium">5 marchands nécessitent validation</span>
               </div>
             </div>
-            <button class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
+            <button
+              class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
           </div>
-          
+
           <!-- Item 2 -->
-          <div class="bg-error-container/40 rounded-card p-4 flex items-center justify-between border border-error-container">
+          <div
+            class="bg-error-container/40 rounded-card p-4 flex items-center justify-between border border-error-container hover:-translate-y-1 hover:shadow-md transition-all duration-300">
             <div class="flex items-center gap-4">
               <div class="text-error">
                 <lucide-icon name="ban" [size]="20"></lucide-icon>
@@ -141,11 +175,13 @@
                 <span class="text-xs text-on-surface-variant font-medium">2 missions signalées en anomalie</span>
               </div>
             </div>
-            <button class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
+            <button
+              class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
           </div>
 
           <!-- Item 3 -->
-          <div class="bg-error-container/40 rounded-card p-4 flex items-center justify-between border border-error-container">
+          <div
+            class="bg-error-container/40 rounded-card p-4 flex items-center justify-between border border-error-container hover:-translate-y-1 hover:shadow-md transition-all duration-300">
             <div class="flex items-center gap-4">
               <div class="text-error">
                 <lucide-icon name="alert-circle" [size]="20"></lucide-icon>
@@ -155,33 +191,36 @@
                 <span class="text-xs text-on-surface-variant font-medium">1 virement rejeté hier</span>
               </div>
             </div>
-            <button class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
+            <button
+              class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
           </div>
         </div>
 
       </div>
 
       <!-- Activité Récente (1 col) -->
-      <div class="lg:col-span-1 bg-surface-container-lowest rounded-card shadow-soft border border-border p-6">
+      <div class="lg:col-span-1 bg-surface-container-lowest rounded-card shadow-soft border border-border p-6 hover:-translate-y-1 hover:shadow-md transition-all duration-300">
         <h2 class="text-lg font-display font-bold text-on-surface mb-6">Activité Récente</h2>
-        
+
         <div class="relative border-l border-outline/30 ml-3 space-y-6">
-          
+
           <!-- Activity 1 -->
           <div class="relative pl-6">
             <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-primary rounded-full border-2 border-white"></div>
             <div class="flex flex-col">
               <span class="text-sm font-bold text-on-surface">Commande créée #CMD-8492</span>
-              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Par Marchand 'Le Petit Four' - Il y a 5 min</span>
+              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Par Marchand 'Le Petit Four' - Il y a 5
+                min</span>
             </div>
           </div>
-          
+
           <!-- Activity 2 -->
           <div class="relative pl-6">
             <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-success rounded-full border-2 border-white"></div>
             <div class="flex flex-col">
               <span class="text-sm font-bold text-on-surface">Mission validée</span>
-              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Livreur 'Jean D.' a terminé la course - Il y a 12 min</span>
+              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Livreur 'Jean D.' a terminé la course -
+                Il y a 12 min</span>
             </div>
           </div>
 
@@ -190,7 +229,8 @@
             <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-success rounded-full border-2 border-white"></div>
             <div class="flex flex-col">
               <span class="text-sm font-bold text-on-surface">Paiement reçu</span>
-              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Facture F-2023-11 acquittée (450€) - Il y a 1 heure</span>
+              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Facture F-2023-11 acquittée (450€) - Il y
+                a 1 heure</span>
             </div>
           </div>
 
@@ -199,7 +239,8 @@
             <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-outline rounded-full border-2 border-white"></div>
             <div class="flex flex-col">
               <span class="text-sm font-bold text-on-surface">Nouveau Livreur inscrit</span>
-              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Dossier en attente de validation - Il y a 2 heures</span>
+              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Dossier en attente de validation - Il y a
+                2 heures</span>
             </div>
           </div>
 

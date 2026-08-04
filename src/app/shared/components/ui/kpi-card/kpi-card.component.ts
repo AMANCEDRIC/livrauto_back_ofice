@@ -8,7 +8,7 @@ import { LucideAngularModule } from 'lucide-angular';
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   template: `
-    <div class="bg-surface-container-lowest rounded-card shadow-soft p-5 flex flex-col h-full border border-border">
+    <div class="bg-surface-container-lowest rounded-card shadow-soft p-5 flex flex-col h-full border border-border hover:-translate-y-1 hover:shadow-md transition-all duration-300">
       <div class="flex justify-between items-center mb-6">
         <!-- Icon -->
         <div class="w-10 h-10 rounded-lg flex items-center justify-center shrink-0" [ngClass]="iconBgClass">

@@ -18,9 +18,9 @@
          [title]="isCollapsed ? item.label : ''"
          [ngClass]="[
            isCollapsed ? 'justify-center px-0 mx-2 rounded-lg' : 'px-4 mx-4 rounded-r-lg',
-           !rla.isActive ? 'border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-medium' : ''
+           !rla.isActive ? 'border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface hover:translate-x-1 font-medium' : ''
          ]"
-         class="group flex items-center h-11 transition-all duration-200 cursor-pointer border-l-[3px]">
+         class="group flex items-center h-11 transition-all duration-300 cursor-pointer border-l-[3px]">
         
         <lucide-icon [name]="item.icon" [size]="18" [strokeWidth]="rla.isActive ? 2.5 : 2"
                      class="transition-colors shrink-0" 

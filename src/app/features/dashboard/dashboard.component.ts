@@ -20,7 +20,7 @@ export class DashboardComponent implements OnInit {
   private adminService = inject(AdminService);
   public authService = inject(AuthService); // Public for template access
   private toastService = inject(ToastService);
-  
+
   stats = signal<AdminStats | null>(null);
   loading = signal<boolean>(true);
   currentDate = new Date();
@@ -79,7 +79,8 @@ export class DashboardComponent implements OnInit {
       {
         name: 'Paiements',
         type: 'pie',
-        radius: ['55%', '80%'],
+        center: ['50%', '40%'],
+        radius: ['45%', '70%'],
         avoidLabelOverlap: false,
         itemStyle: { borderRadius: 10, borderColor: '#fff', borderWidth: 2 },
         label: { show: false, position: 'center' },
@@ -91,6 +92,38 @@ export class DashboardComponent implements OnInit {
           { value: 580, name: 'MTN Money', itemStyle: { color: '#10B981' } },
           { value: 484, name: 'Moov Money', itemStyle: { color: '#3B82F6' } }
         ]
+      }
+    ]
+  };
+
+  barChartOptions: EChartsOption = {
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: '#ffffff',
+      borderColor: '#E2E8F0',
+      textStyle: { color: '#0F172A', fontFamily: 'Inter' },
+      extraCssText: 'box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05); border-radius: 12px;',
+      axisPointer: { type: 'shadow' }
+    },
+    grid: { left: '3%', right: '4%', bottom: '3%', top: '10%', containLabel: true },
+    xAxis: {
+      type: 'category',
+      data: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+      axisLine: { lineStyle: { color: '#E2E8F0' } },
+      axisLabel: { color: '#64748B', fontFamily: 'Inter' }
+    },
+    yAxis: {
+      type: 'value',
+      splitLine: { lineStyle: { color: '#F1F5F9', type: 'dashed' } },
+      axisLabel: { color: '#64748B', fontFamily: 'Inter' }
+    },
+    series: [
+      {
+        name: 'Missions Terminées',
+        type: 'bar',
+        barWidth: '40%',
+        itemStyle: { color: '#10B981', borderRadius: [4, 4, 0, 0] },
+        data: [45, 52, 38, 65, 89, 70, 60]
       }
     ]
   };
