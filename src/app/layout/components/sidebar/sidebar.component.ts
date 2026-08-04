@@ -25,11 +25,8 @@ export class SidebarComponent {
     { label: 'Dashboard', route: '/admin/dashboard', icon: 'layout-dashboard', exact: true },
     // { label: 'Commandes', route: '/admin/commandes', icon: 'shopping-bag' },
     // { label: 'Missions', route: '/admin/missions', icon: 'map' },
-    { label: 'Livreurs', route: '/admin/utilisateurs', icon: 'bike' }, // On redirige vers Utilisateurs pour l'instant
-    { label: 'Marchands', route: '/admin/utilisateurs', icon: 'store' }, // On redirige vers Utilisateurs pour l'instant
-    { label: 'Clients', route: '/admin/utilisateurs', icon: 'users' }, // On redirige vers Utilisateurs pour l'instant
-    // { label: 'Paiements', route: '/admin/paiements', icon: 'credit-card' },
-    // { label: 'Retraits', route: '/admin/retraits', icon: 'arrow-down-to-line' },
+    { label: 'Utilisateurs', route: '/admin/utilisateurs', icon: 'users' },
+    { label: 'Paiements', route: '/admin/paiements', icon: 'credit-card' },
     // { label: 'Commissions', route: '/admin/commissions', icon: 'percent' },
     // { label: 'Notifications', route: '/admin/notifications', icon: 'bell' },
     // { label: 'Statistiques', route: '/admin/statistiques', icon: 'bar-chart-3' },

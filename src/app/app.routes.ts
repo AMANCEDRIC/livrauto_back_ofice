@@ -5,6 +5,8 @@ import { VerifyOtpComponent } from './features/auth/verify-otp/verify-otp.compon
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { UtilisateursComponent } from './features/utilisateurs/utilisateurs.component';
+import { PaiementsComponent } from './features/paiements/paiements.component';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -19,9 +21,11 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'utilisateurs', component: UtilisateursComponent },
+      { path: 'paiements', component: PaiementsComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },

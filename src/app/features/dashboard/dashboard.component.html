@@ -103,5 +103,112 @@
 
       </div>
     </div>
+
+    <!-- Section 3: Alertes & Activité Récente -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+      
+      <!-- Alertes (2 cols) -->
+      <div class="lg:col-span-2 bg-surface-container-lowest rounded-card shadow-soft border border-border p-6">
+        
+        <div class="flex items-center justify-between mb-6">
+          <div class="flex items-center text-on-surface">
+            <lucide-icon name="alert-triangle" [size]="24" class="text-error mr-3"></lucide-icon>
+            <h2 class="text-lg font-display font-bold">Alertes</h2>
+          </div>
+          <a href="#" class="text-sm font-medium text-primary hover:underline">Tout voir</a>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Item 1 -->
+          <div class="bg-warning-container/40 rounded-card p-4 flex items-center justify-between border border-warning-container">
+            <div class="flex items-center gap-4">
+              <div class="text-warning">
+                <lucide-icon name="clock" [size]="20"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-on-surface">Comptes en attente</span>
+                <span class="text-xs text-on-surface-variant font-medium">5 marchands nécessitent validation</span>
+              </div>
+            </div>
+            <button class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
+          </div>
+          
+          <!-- Item 2 -->
+          <div class="bg-error-container/40 rounded-card p-4 flex items-center justify-between border border-error-container">
+            <div class="flex items-center gap-4">
+              <div class="text-error">
+                <lucide-icon name="ban" [size]="20"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-on-surface">Missions bloquées</span>
+                <span class="text-xs text-on-surface-variant font-medium">2 missions signalées en anomalie</span>
+              </div>
+            </div>
+            <button class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="bg-error-container/40 rounded-card p-4 flex items-center justify-between border border-error-container">
+            <div class="flex items-center gap-4">
+              <div class="text-error">
+                <lucide-icon name="alert-circle" [size]="20"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-bold text-on-surface">Paiements échoués</span>
+                <span class="text-xs text-on-surface-variant font-medium">1 virement rejeté hier</span>
+              </div>
+            </div>
+            <button class="px-4 py-1.5 text-xs font-semibold border border-outline/30 rounded bg-white hover:bg-surface-container-low transition-colors">Gérer</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Activité Récente (1 col) -->
+      <div class="lg:col-span-1 bg-surface-container-lowest rounded-card shadow-soft border border-border p-6">
+        <h2 class="text-lg font-display font-bold text-on-surface mb-6">Activité Récente</h2>
+        
+        <div class="relative border-l border-outline/30 ml-3 space-y-6">
+          
+          <!-- Activity 1 -->
+          <div class="relative pl-6">
+            <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-primary rounded-full border-2 border-white"></div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-on-surface">Commande créée #CMD-8492</span>
+              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Par Marchand 'Le Petit Four' - Il y a 5 min</span>
+            </div>
+          </div>
+          
+          <!-- Activity 2 -->
+          <div class="relative pl-6">
+            <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-success rounded-full border-2 border-white"></div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-on-surface">Mission validée</span>
+              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Livreur 'Jean D.' a terminé la course - Il y a 12 min</span>
+            </div>
+          </div>
+
+          <!-- Activity 3 -->
+          <div class="relative pl-6">
+            <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-success rounded-full border-2 border-white"></div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-on-surface">Paiement reçu</span>
+              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Facture F-2023-11 acquittée (450€) - Il y a 1 heure</span>
+            </div>
+          </div>
+
+          <!-- Activity 4 -->
+          <div class="relative pl-6">
+            <div class="absolute -left-1.5 top-1.5 w-3 h-3 bg-outline rounded-full border-2 border-white"></div>
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-on-surface">Nouveau Livreur inscrit</span>
+              <span class="text-xs text-on-surface-variant font-medium mt-0.5">Dossier en attente de validation - Il y a 2 heures</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
   </ng-container>
 </div>

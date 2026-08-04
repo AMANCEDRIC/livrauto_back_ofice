@@ -1,0 +1,244 @@
+<!-- En-tête page -->
+<div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end space-y-4 md:space-y-0">
+  <div>
+    <h1 class="text-3xl font-display font-bold text-on-surface tracking-tight">Paiements & Virements</h1>
+    <p class="text-sm text-on-surface-variant mt-2 font-body">Suivre et relancer les transactions de la plateforme</p>
+  </div>
+
+  <!-- Onglets Paiements / Virements -->
+  <div class="flex space-x-2 bg-surface-container-low p-1.5 rounded-lg border border-border">
+    <button (click)="activeTab.set('paiements')"
+            [ngClass]="activeTab() === 'paiements'
+              ? 'bg-primary/5 text-primary border-primary font-semibold'
+              : 'text-on-surface-variant hover:text-on-surface border-transparent'"
+            class="px-4 py-2 text-sm rounded-md transition-all duration-300 flex items-center space-x-2 border-b-2">
+      <lucide-icon name="credit-card" [size]="16" [strokeWidth]="activeTab() === 'paiements' ? 2.5 : 2"></lucide-icon>
+      <span>Paiements</span>
+    </button>
+    <button (click)="activeTab.set('virements')"
+            [ngClass]="activeTab() === 'virements'
+              ? 'bg-primary/5 text-primary border-primary font-semibold'
+              : 'text-on-surface-variant hover:text-on-surface border-transparent'"
+            class="px-4 py-2 text-sm rounded-md transition-all duration-300 flex items-center space-x-2 border-b-2">
+      <lucide-icon name="arrow-down-to-line" [size]="16" [strokeWidth]="activeTab() === 'virements' ? 2.5 : 2"></lucide-icon>
+      <span>Virements</span>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ PAIEMENTS -->
+<div *ngIf="activeTab() === 'paiements'" class="bg-surface-container-lowest rounded-card shadow-soft border border-border flex flex-col">
+
+  <!-- Header & Filters -->
+  <div class="p-6 border-b border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <h2 class="text-lg font-display font-semibold text-on-surface">Historique des Paiements</h2>
+    <div class="flex space-x-2 bg-surface-container-low p-1 rounded-lg border border-border">
+      <button (click)="setFilterPaiement('ALL')"
+              [ngClass]="filterPaiement() === 'ALL' ? 'bg-white text-on-surface shadow-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-3 py-1.5 text-xs rounded-md transition-all duration-200">Tous</button>
+      <button (click)="setFilterPaiement('SUCCES')"
+              [ngClass]="filterPaiement() === 'SUCCES' ? 'bg-white text-on-surface shadow-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-3 py-1.5 text-xs rounded-md transition-all duration-200">Succès</button>
+      <button (click)="setFilterPaiement('EN_ATTENTE')"
+              [ngClass]="filterPaiement() === 'EN_ATTENTE' ? 'bg-white text-on-surface shadow-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-3 py-1.5 text-xs rounded-md transition-all duration-200">En attente</button>
+      <button (click)="setFilterPaiement('ECHEC')"
+              [ngClass]="filterPaiement() === 'ECHEC' ? 'bg-white text-on-surface shadow-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-3 py-1.5 text-xs rounded-md transition-all duration-200">Échoués</button>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loadingPaiements()" class="flex justify-center items-center py-16">
+    <div class="animate-spin rounded-full h-8 w-8 border-4 border-surface-container-high border-t-primary"></div>
+  </div>
+
+  <!-- Data Table -->
+  <div *ngIf="!loadingPaiements()" class="w-full overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-surface-container/30 border-b border-border">
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Référence</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Client & Marchand</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Date</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Statut</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-border">
+        
+        <tr *ngFor="let p of filteredPaiements(); trackBy: trackById" class="hover:bg-surface-container-lowest/50 transition-colors">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center gap-3">
+              <div class="h-8 w-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+                <lucide-icon name="credit-card" [size]="14" class="text-on-surface-variant"></lucide-icon>
+              </div>
+              <span class="text-sm font-semibold text-on-surface">{{ p.commandeReference }}</span>
+            </div>
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex flex-col">
+              <span class="text-sm font-medium text-on-surface">{{ p.clientNom }}</span>
+              <span class="text-xs text-on-surface-variant">{{ p.clientTelephone }} · Marchand: {{ p.merchantNom }}</span>
+            </div>
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex flex-col">
+              <span class="text-sm font-bold text-on-surface">{{ p.montantTotal | number:'1.0-0' }} XOF</span>
+              <span class="text-xs text-on-surface-variant">{{ operateurLabel(p.operateur) }}</span>
+            </div>
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-on-surface-variant">
+            {{ p.createdAt | date:'dd/MM/yy HH:mm' }}
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap">
+            <app-status-badge [status]="statutPaiementClass(p.statut)">
+              {{ p.statut | titlecase }}
+            </app-status-badge>
+            <div *ngIf="p.nombreTentatives > 1" class="text-[10px] text-on-surface-variant mt-1 ml-1">
+              {{ p.nombreTentatives }} tentatives
+            </div>
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap text-right">
+            <button *ngIf="p.statut === 'ECHEC' || p.statut === 'EN_ATTENTE'"
+                    (click)="relancerPaiement(p)"
+                    [disabled]="relancingPaiementId() === p.id"
+                    class="inline-flex items-center justify-center h-8 px-3 text-xs font-semibold text-on-surface bg-surface-container-lowest border border-border rounded hover:bg-surface-container-low transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              <lucide-icon *ngIf="relancingPaiementId() !== p.id" name="play" [size]="14" class="mr-1.5"></lucide-icon>
+              <div *ngIf="relancingPaiementId() === p.id" class="animate-spin h-3 w-3 border-2 border-on-surface border-t-transparent rounded-full mr-1.5"></div>
+              <span>Relancer</span>
+            </button>
+            <span *ngIf="p.statut === 'SUCCES'"
+                  class="inline-flex items-center text-xs font-medium text-success">
+              <lucide-icon name="check" [size]="14" class="mr-1"></lucide-icon>
+              Confirmé
+            </span>
+          </td>
+        </tr>
+        
+        <tr *ngIf="filteredPaiements().length === 0">
+          <td colspan="6" class="px-6 py-12 text-center text-on-surface-variant">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-surface-container mb-3">
+              <lucide-icon name="credit-card" [size]="24" class="opacity-50"></lucide-icon>
+            </div>
+            <p class="font-medium">Aucun paiement trouvé.</p>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ VIREMENTS -->
+<div *ngIf="activeTab() === 'virements'" class="bg-surface-container-lowest rounded-card shadow-soft border border-border flex flex-col">
+
+  <!-- Header & Filters -->
+  <div class="p-6 border-b border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <h2 class="text-lg font-display font-semibold text-on-surface">Historique des Virements</h2>
+    <div class="flex space-x-2 bg-surface-container-low p-1 rounded-lg border border-border">
+      <button (click)="setFilterVirement('ALL')"
+              [ngClass]="filterVirement() === 'ALL' ? 'bg-white text-on-surface shadow-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-3 py-1.5 text-xs rounded-md transition-all duration-200">Tous</button>
+      <button (click)="setFilterVirement('ENVOYE')"
+              [ngClass]="filterVirement() === 'ENVOYE' ? 'bg-white text-on-surface shadow-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-3 py-1.5 text-xs rounded-md transition-all duration-200">Envoyés</button>
+      <button (click)="setFilterVirement('EN_ATTENTE')"
+              [ngClass]="filterVirement() === 'EN_ATTENTE' ? 'bg-white text-on-surface shadow-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-3 py-1.5 text-xs rounded-md transition-all duration-200">En attente</button>
+      <button (click)="setFilterVirement('ECHEC')"
+              [ngClass]="filterVirement() === 'ECHEC' ? 'bg-white text-on-surface shadow-sm font-semibold' : 'text-on-surface-variant hover:text-on-surface'"
+              class="px-3 py-1.5 text-xs rounded-md transition-all duration-200">Échoués</button>
+    </div>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="loadingVirements()" class="flex justify-center items-center py-16">
+    <div class="animate-spin rounded-full h-8 w-8 border-4 border-surface-container-high border-t-primary"></div>
+  </div>
+
+  <!-- Data Table -->
+  <div *ngIf="!loadingVirements()" class="w-full overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-surface-container/30 border-b border-border">
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Destinataire</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Commande</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Date</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Statut</th>
+          <th class="px-6 py-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-border">
+        
+        <tr *ngFor="let v of filteredVirements(); trackBy: trackById" class="hover:bg-surface-container-lowest/50 transition-colors">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center gap-3">
+              <div class="h-8 w-8 rounded-full bg-surface-container-high flex items-center justify-center shrink-0">
+                <lucide-icon [name]="v.typeDestinataire === 'LIVREUR' ? 'bike' : (v.typeDestinataire === 'MERCHANT' ? 'store' : 'banknote')" [size]="14" class="text-on-surface-variant"></lucide-icon>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-sm font-semibold text-on-surface">{{ v.destinataireNom }}</span>
+                <span class="text-xs text-on-surface-variant">{{ typeVirementLabel(v.typeDestinataire) }} · {{ v.destinataireTelephone }}</span>
+              </div>
+            </div>
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="text-sm font-medium text-on-surface">{{ v.commandeReference }}</span>
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="text-sm font-bold text-on-surface">{{ v.montant | number:'1.0-0' }} XOF</span>
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-on-surface-variant">
+            {{ (v.dateVirement || v.createdAt) | date:'dd/MM/yy HH:mm' }}
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap">
+            <app-status-badge [status]="statutVirementClass(v.statut)">
+              {{ v.statut | titlecase }}
+            </app-status-badge>
+            <div *ngIf="v.messageErreur" class="text-[10px] text-error mt-1 ml-1 truncate max-w-[120px]" [title]="v.messageErreur">
+              {{ v.messageErreur }}
+            </div>
+          </td>
+          
+          <td class="px-6 py-4 whitespace-nowrap text-right">
+            <button *ngIf="v.statut === 'ECHEC' || v.statut === 'EN_ATTENTE'"
+                    (click)="relancerVirement(v)"
+                    [disabled]="relancingVirementId() === v.id"
+                    class="inline-flex items-center justify-center h-8 px-3 text-xs font-semibold text-on-surface bg-surface-container-lowest border border-border rounded hover:bg-surface-container-low transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              <lucide-icon *ngIf="relancingVirementId() !== v.id" name="play" [size]="14" class="mr-1.5"></lucide-icon>
+              <div *ngIf="relancingVirementId() === v.id" class="animate-spin h-3 w-3 border-2 border-on-surface border-t-transparent rounded-full mr-1.5"></div>
+              <span>Relancer</span>
+            </button>
+            <span *ngIf="v.statut === 'ENVOYE'"
+                  class="inline-flex items-center text-xs font-medium text-success">
+              <lucide-icon name="check" [size]="14" class="mr-1"></lucide-icon>
+              Envoyé
+            </span>
+          </td>
+        </tr>
+        
+        <tr *ngIf="filteredVirements().length === 0">
+          <td colspan="6" class="px-6 py-12 text-center text-on-surface-variant">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-surface-container mb-3">
+              <lucide-icon name="arrow-down-to-line" [size]="24" class="opacity-50"></lucide-icon>
+            </div>
+            <p class="font-medium">Aucun virement trouvé.</p>
+          </td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+</div>
