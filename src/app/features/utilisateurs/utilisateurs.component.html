@@ -1,0 +1,150 @@
+<div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end space-y-4 md:space-y-0">
+  <div>
+    <h1 class="text-3xl font-display font-bold text-on-surface tracking-tight mb-2">Gestion des Utilisateurs</h1>
+    <p class="text-sm text-on-surface-variant font-body">Gérez les comptes clients, livreurs et administrateurs.</p>
+  </div>
+  
+  <div class="flex items-center space-x-3">
+    <!-- Tabs -->
+    <div class="flex bg-surface-container-low p-1 rounded-lg border border-border">
+      <button (click)="setFilter('ALL')" [ngClass]="{'bg-white shadow-sm text-on-surface': filter() === 'ALL', 'text-on-surface-variant hover:text-on-surface': filter() !== 'ALL'}"
+              class="px-4 py-1.5 text-xs font-semibold rounded-md transition-all">
+        Tous
+      </button>
+      <button (click)="setFilter('EN_ATTENTE')" [ngClass]="{'bg-white shadow-sm text-on-surface': filter() === 'EN_ATTENTE', 'text-on-surface-variant hover:text-on-surface': filter() !== 'EN_ATTENTE'}"
+              class="px-4 py-1.5 text-xs font-semibold rounded-md transition-all">
+        Clients
+      </button>
+      <button (click)="setFilter('ACTIF')" [ngClass]="{'bg-white shadow-sm text-on-surface': filter() === 'ACTIF', 'text-on-surface-variant hover:text-on-surface': filter() !== 'ACTIF'}"
+              class="px-4 py-1.5 text-xs font-semibold rounded-md transition-all">
+        Livreurs
+      </button>
+    </div>
+
+    <button class="h-9 px-4 rounded-lg border border-border bg-white text-on-surface text-sm font-semibold hover:bg-surface-container-low transition-colors flex items-center shadow-sm">
+      <lucide-icon name="filter" [size]="16" class="mr-2 text-on-surface-variant"></lucide-icon>
+      Filtres
+    </button>
+    
+    <button class="h-9 px-4 rounded-lg bg-primary-container text-white text-sm font-semibold hover:brightness-110 transition-colors flex items-center shadow-soft">
+      <lucide-icon name="download" [size]="16" class="mr-2"></lucide-icon>
+      Exporter
+    </button>
+  </div>
+</div>
+
+<div class="bg-white rounded-card shadow-soft border border-border overflow-hidden">
+  
+  <!-- Table Header Actions (Search) -->
+  <div class="p-6 border-b border-border flex justify-between items-center bg-white">
+    <div class="relative w-80">
+      <lucide-icon name="search" [size]="18" class="absolute left-3 top-1/2 -translate-y-1/2 text-outline"></lucide-icon>
+      <input type="text" placeholder="Rechercher un utilisateur..." 
+             class="w-full h-10 pl-10 pr-4 bg-surface-container-lowest border border-border rounded-input text-sm text-on-surface focus:outline-none focus:ring-2 focus:ring-primary-container/20 focus:border-primary-container transition-all shadow-sm">
+    </div>
+    <div class="text-sm font-medium text-on-surface border border-border rounded-lg px-4 py-2">
+      Statut: Tous
+    </div>
+  </div>
+
+  <div *ngIf="loading()" class="flex justify-center py-16 bg-white">
+    <div class="animate-spin rounded-full h-8 w-8 border-4 border-surface-container-high border-t-primary-container"></div>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!loading()" class="w-full overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-white">
+          <th class="py-4 px-6 text-[11px] font-semibold text-outline uppercase tracking-wider font-display">Avatar</th>
+          <th class="py-4 px-6 text-[11px] font-semibold text-outline uppercase tracking-wider font-display flex items-center">
+            Nom Complet <lucide-icon name="arrow-down" [size]="12" class="ml-1"></lucide-icon>
+          </th>
+          <th class="py-4 px-6 text-[11px] font-semibold text-outline uppercase tracking-wider font-display">Contact</th>
+          <th class="py-4 px-6 text-[11px] font-semibold text-outline uppercase tracking-wider font-display">Rôle</th>
+          <th class="py-4 px-6 text-[11px] font-semibold text-outline uppercase tracking-wider font-display">Statut</th>
+          <th class="py-4 px-6 text-[11px] font-semibold text-outline uppercase tracking-wider font-display">Mobile Money</th>
+          <th class="py-4 px-6 text-[11px] font-semibold text-outline uppercase tracking-wider font-display text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers(); trackBy: trackById" 
+            class="border-t border-border hover:bg-surface-container transition-colors duration-150">
+          
+          <!-- Avatar -->
+          <td class="py-4 px-6">
+            <div class="h-9 w-9 rounded-full overflow-hidden bg-surface-container flex items-center justify-center border border-border">
+              <img src="https://i.pravatar.cc/150?u={{user.id}}" alt="{{user.prenom}}" class="w-full h-full object-cover">
+            </div>
+          </td>
+          
+          <!-- Nom Complet -->
+          <td class="py-4 px-6">
+            <span class="text-sm font-semibold text-on-surface">{{ user.prenom }} {{ user.nom }}</span>
+          </td>
+          
+          <!-- Contact -->
+          <td class="py-4 px-6">
+            <div class="flex flex-col">
+              <span class="text-sm text-on-surface">{{ user.telephone }}</span>
+              <span class="text-[11px] text-on-surface-variant">{{ user.email || 'nom.p@example.com' }}</span>
+            </div>
+          </td>
+          
+          <!-- Role -->
+          <td class="py-4 px-6">
+            <span class="text-sm text-on-surface">{{ user.role === 'MERCHANT' ? 'Client' : 'Livreur' }}</span>
+          </td>
+          
+          <!-- Statut -->
+          <td class="py-4 px-6">
+            <div class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold"
+                 [ngClass]="{
+                   'bg-success-container/20 text-success': user.statut === 'ACTIF',
+                   'bg-warning-container/30 text-warning': user.statut === 'EN_ATTENTE',
+                   'bg-error-container/30 text-error': user.statut === 'INACTIF'
+                 }">
+              {{ user.statut | titlecase }}
+              <lucide-icon *ngIf="user.statut === 'ACTIF'" name="play" [size]="10" class="ml-1 fill-current"></lucide-icon>
+            </div>
+          </td>
+          
+          <!-- Mobile Money -->
+          <td class="py-4 px-6">
+            <span class="text-sm text-on-surface-variant">Wave (***0405)</span>
+          </td>
+          
+          <!-- Actions -->
+          <td class="py-4 px-6 text-right">
+            <button class="p-1 text-on-surface-variant hover:text-primary transition-colors">
+              <lucide-icon name="more-vertical" [size]="18"></lucide-icon>
+            </button>
+          </td>
+        </tr>
+        
+        <tr *ngIf="filteredUsers().length === 0">
+          <td colspan="7" class="px-6 py-16 text-center text-on-surface-variant font-medium">
+            Aucun utilisateur trouvé.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Pagination -->
+    <div class="p-4 border-t border-border flex items-center justify-between bg-white text-sm text-on-surface-variant">
+      <div>Affichage 1 à {{ filteredUsers().length }} sur {{ filteredUsers().length }}</div>
+      <div class="flex items-center space-x-1">
+        <button class="w-8 h-8 flex items-center justify-center rounded border border-border hover:bg-surface-container-low transition-colors">
+          <lucide-icon name="chevron-left" [size]="16"></lucide-icon>
+        </button>
+        <button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-white font-semibold">1</button>
+        <button class="w-8 h-8 flex items-center justify-center rounded border border-border hover:bg-surface-container-low transition-colors">2</button>
+        <button class="w-8 h-8 flex items-center justify-center rounded border border-border hover:bg-surface-container-low transition-colors">3</button>
+        <span class="px-1">...</span>
+        <button class="w-8 h-8 flex items-center justify-center rounded border border-border hover:bg-surface-container-low transition-colors">
+          <lucide-icon name="chevron-right" [size]="16"></lucide-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,109 +1,110 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../core/services/admin.service';
+import { AuthService } from '../../core/services/auth.service';
 import { AdminStats } from '../../core/models/admin.model';
+import { ToastService } from '../../shared/services/toast.service';
+import { KpiCardComponent } from '../../shared/components/ui/kpi-card/kpi-card.component';
+import { ButtonComponent } from '../../shared/components/ui/button/button.component';
+import { NgxEchartsModule } from 'ngx-echarts';
+import { LucideAngularModule } from 'lucide-angular';
+import type { EChartsOption } from 'echarts';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
-  template: `
-    <div class="mb-8">
-      <h1 class="text-2xl font-display font-bold text-on-surface tracking-tight">Vue d'ensemble</h1>
-      <p class="text-sm text-on-surface-variant mt-1 font-body">L'activité de votre plateforme Livrauto en temps réel</p>
-    </div>
-
-    <div *ngIf="loading" class="flex justify-center items-center h-64">
-      <div class="animate-spin rounded-full h-8 w-8 border-4 border-surface-container-high border-t-primary"></div>
-    </div>
-
-    <div *ngIf="!loading && stats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      
-      <!-- KPI 1 -->
-      <div class="bg-surface-container-lowest rounded-lg p-6 hover:shadow-ambient transition-all duration-300">
-        <div class="flex items-start justify-between">
-          <div>
-            <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Commandes Totales</p>
-            <p class="text-3xl font-display font-bold text-on-surface mt-2">{{ stats.totalCommandes }}</p>
-          </div>
-          <div class="p-2.5 rounded-md bg-secondary-container text-on-secondary-container">
-            <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
-          </div>
-        </div>
-        <div class="mt-6 flex items-center text-xs font-semibold text-on-surface-variant">
-          <span class="material-symbols-outlined text-[16px] mr-1 text-on-secondary-container">trending_up</span>
-          +12% depuis la semaine dernière
-        </div>
-      </div>
-
-      <!-- KPI 2 -->
-      <div class="bg-surface-container-lowest rounded-lg p-6 hover:shadow-ambient transition-all duration-300">
-        <div class="flex items-start justify-between">
-          <div>
-            <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Missions Livrées</p>
-            <p class="text-3xl font-display font-bold text-on-surface mt-2">{{ stats.totalMissions }}</p>
-          </div>
-          <div class="p-2.5 rounded-md bg-tertiary-container text-on-tertiary-container">
-            <span class="material-symbols-outlined text-[22px]">local_shipping</span>
-          </div>
-        </div>
-        <div class="mt-6 flex items-center text-xs font-semibold text-on-surface-variant">
-          <span class="material-symbols-outlined text-[16px] mr-1 text-on-tertiary-container">trending_up</span>
-          +5% depuis la semaine dernière
-        </div>
-      </div>
-
-      <!-- KPI 3 -->
-      <div class="bg-surface-container-lowest rounded-lg p-6 hover:shadow-ambient transition-all duration-300">
-        <div class="flex items-start justify-between">
-          <div>
-            <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Commissions</p>
-            <p class="text-2xl font-display font-bold text-on-surface mt-2">{{ stats.totalRevenue | currency:'XOF':'symbol':'1.0-0':'fr-FR' }}</p>
-          </div>
-          <div class="p-2.5 rounded-md bg-primary-container text-on-primary">
-            <span class="material-symbols-outlined text-[22px]">payments</span>
-          </div>
-        </div>
-        <div class="mt-6 flex items-center text-xs font-semibold text-on-surface-variant">
-          <span class="material-symbols-outlined text-[16px] mr-1 text-primary">trending_up</span>
-          +18% ce mois
-        </div>
-      </div>
-
-      <!-- KPI 4 -->
-      <div class="bg-surface-container-lowest rounded-lg p-6 hover:shadow-ambient transition-all duration-300">
-        <div class="flex items-start justify-between">
-          <div>
-            <p class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Communauté</p>
-            <p class="text-3xl font-display font-bold text-on-surface mt-2">{{ stats.totalMarchands + stats.totalLivreurs }}</p>
-          </div>
-          <div class="p-2.5 rounded-md bg-surface-container-high text-on-surface">
-            <span class="material-symbols-outlined text-[22px]">group</span>
-          </div>
-        </div>
-        <div class="mt-6 text-xs font-semibold text-on-surface-variant flex space-x-4">
-          <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-on-surface-variant opacity-70 mr-1.5"></span>{{ stats.totalMarchands }} Marchands</span>
-          <span class="flex items-center"><span class="w-2 h-2 rounded-full bg-on-surface-variant opacity-40 mr-1.5"></span>{{ stats.totalLivreurs }} Livreurs</span>
-        </div>
-      </div>
-
-    </div>
-  `
+  imports: [CommonModule, KpiCardComponent, NgxEchartsModule, LucideAngularModule],
+  templateUrl: './dashboard.component.html'
 })
 export class DashboardComponent implements OnInit {
   private adminService = inject(AdminService);
-  stats: AdminStats | null = null;
-  loading = true;
+  public authService = inject(AuthService); // Public for template access
+  private toastService = inject(ToastService);
+  
+  stats = signal<AdminStats | null>(null);
+  loading = signal<boolean>(true);
+  currentDate = new Date();
+
+  // ECharts Configurations
+  lineChartOptions: EChartsOption = {
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: '#ffffff',
+      borderColor: '#E2E8F0',
+      textStyle: { color: '#0F172A', fontFamily: 'Inter' },
+      extraCssText: 'box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05); border-radius: 12px;'
+    },
+    grid: { left: '3%', right: '4%', bottom: '3%', top: '5%', containLabel: true },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+      axisLine: { lineStyle: { color: '#E2E8F0' } },
+      axisLabel: { color: '#64748B', fontFamily: 'Inter' }
+    },
+    yAxis: {
+      type: 'value',
+      splitLine: { lineStyle: { color: '#F1F5F9', type: 'dashed' } },
+      axisLabel: { color: '#64748B', fontFamily: 'Inter' }
+    },
+    series: [
+      {
+        name: 'Commandes',
+        type: 'line',
+        smooth: true,
+        showSymbol: false,
+        itemStyle: { color: '#2563EB' },
+        lineStyle: { width: 3, shadowColor: 'rgba(37, 99, 235, 0.2)', shadowBlur: 10, shadowOffsetY: 5 },
+        areaStyle: {
+          color: {
+            type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+            colorStops: [{ offset: 0, color: 'rgba(37, 99, 235, 0.15)' }, { offset: 1, color: 'rgba(37, 99, 235, 0)' }]
+          }
+        },
+        data: [120, 132, 101, 134, 290, 230, 210]
+      }
+    ]
+  };
+
+  donutChartOptions: EChartsOption = {
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: '#ffffff',
+      borderColor: '#E2E8F0',
+      textStyle: { color: '#0F172A', fontFamily: 'Inter' },
+      extraCssText: 'box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05); border-radius: 12px;'
+    },
+    legend: { bottom: '0%', left: 'center', itemStyle: { borderWidth: 0 }, textStyle: { color: '#64748B', fontFamily: 'Inter' } },
+    series: [
+      {
+        name: 'Paiements',
+        type: 'pie',
+        radius: ['55%', '80%'],
+        avoidLabelOverlap: false,
+        itemStyle: { borderRadius: 10, borderColor: '#fff', borderWidth: 2 },
+        label: { show: false, position: 'center' },
+        emphasis: { label: { show: true, fontSize: 16, fontWeight: 'bold' } },
+        labelLine: { show: false },
+        data: [
+          { value: 1048, name: 'Wave', itemStyle: { color: '#2563EB' } },
+          { value: 735, name: 'Orange Money', itemStyle: { color: '#F59E0B' } },
+          { value: 580, name: 'MTN Money', itemStyle: { color: '#10B981' } },
+          { value: 484, name: 'Moov Money', itemStyle: { color: '#3B82F6' } }
+        ]
+      }
+    ]
+  };
 
   ngOnInit() {
     this.adminService.getStats().subscribe({
       next: (data) => {
-        this.stats = data;
-        this.loading = false;
+        this.stats.set(data);
+        this.loading.set(false);
       },
       error: (err) => {
+        this.toastService.error("Erreur", "Impossible de récupérer les statistiques.");
         console.error("Erreur de récupération des stats", err);
-        this.loading = false;
+        this.loading.set(false);
       }
     });
   }

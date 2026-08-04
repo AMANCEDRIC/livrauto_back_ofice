@@ -1,24 +1,31 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-auth-layout',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, LucideAngularModule],
   template: `
-    <div class="min-h-screen bg-surface flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div class="sm:mx-auto sm:w-full sm:max-w-md flex flex-col items-center">
-        <img src="/logo_padded.png" alt="Livrauto Logo" class="h-16 w-auto">
-        <h2 class="mt-4 text-center text-3xl font-display font-bold text-on-surface tracking-tight">
-          Espace Administrateur
-        </h2>
-        <p class="mt-2 text-center text-sm text-on-surface-variant font-body">Portail sécurisé Livrauto</p>
-      </div>
-
-      <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-surface-container-lowest py-8 px-6 shadow-ambient rounded-xl sm:px-10">
-          <router-outlet></router-outlet>
+    <div class="min-h-screen bg-surface flex flex-col justify-center items-center py-12 sm:px-6 lg:px-8 animate-fade-in-up">
+      <div class="w-full max-w-[420px] bg-white rounded-2xl shadow-soft p-10 border border-border">
+        
+        <!-- Logo -->
+        <div class="flex flex-col items-center mb-8">
+          <img src="/logo_livre_auto.png" alt="Livre Auto" class="h-20 w-auto object-contain mb-4">
+          <p class="mt-1 text-xs font-bold text-on-surface-variant uppercase tracking-widest">Admin Console</p>
         </div>
+
+        <router-outlet></router-outlet>
+      </div>
+      
+      <!-- Footer Links -->
+      <div class="mt-8 text-center flex items-center justify-center space-x-4 text-xs font-medium text-on-surface-variant">
+        <a href="#" class="hover:text-primary transition-colors">Support</a>
+        <span>•</span>
+        <a href="#" class="hover:text-primary transition-colors">Privacy Policy</a>
+        <span>•</span>
+        <span>© 2026 LIVR'AUTO</span>
       </div>
     </div>
   `

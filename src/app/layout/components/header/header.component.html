@@ -1,0 +1,44 @@
+<header class="bg-white h-16 flex items-center justify-between px-8 sticky top-0 z-10 transition-all duration-300 border-b border-border shadow-sm">
+  
+  <!-- Left side: Burger -->
+  <div class="flex items-center shrink-0">
+    <button (click)="toggleSidebar.emit()" class="mr-4 p-2 text-on-surface-variant hover:text-primary transition-colors rounded-none hover:bg-surface-container-low focus:outline-none flex items-center justify-center shrink-0">
+      <lucide-icon name="menu" [size]="20" [strokeWidth]="2.5"></lucide-icon>
+    </button>
+  </div>
+
+  <!-- Right Actions -->
+  <div class="flex items-center space-x-3 shrink-0">
+    
+    <!-- Notifications -->
+    <button class="relative p-2 text-outline hover:text-primary transition-colors rounded-full hover:bg-surface-container-low">
+      <lucide-icon name="bell" [size]="20"></lucide-icon>
+      <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+    </button>
+
+    <!-- Settings -->
+    <button class="relative p-2 text-outline hover:text-primary transition-colors rounded-full hover:bg-surface-container-low">
+      <lucide-icon name="settings" [size]="20"></lucide-icon>
+    </button>
+    
+    <!-- Help -->
+    <button class="relative p-2 text-outline hover:text-primary transition-colors rounded-full hover:bg-surface-container-low mr-2">
+      <lucide-icon name="help-circle" [size]="20"></lucide-icon>
+    </button>
+
+    <!-- Profile -->
+    <div class="flex items-center space-x-3 cursor-pointer group hover:bg-surface-container-low p-1.5 rounded-lg transition-colors border-l border-border pl-4">
+      <div class="h-9 w-9 rounded-full overflow-hidden bg-surface-container flex items-center justify-center border border-border">
+        <!-- Using a placeholder image to match the avatar feel -->
+        <img src="https://i.pravatar.cc/150?img=47" alt="Profile" class="w-full h-full object-cover">
+      </div>
+      <div class="hidden md:block text-left">
+        <p class="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors">
+          {{ (user$ | async)?.prenom || 'Admin User' }}
+        </p>
+        <p class="text-[11px] text-outline">Super Admin</p>
+      </div>
+    </div>
+    
+  </div>
+</header>

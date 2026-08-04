@@ -3,12 +3,16 @@ import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../components/sidebar/sidebar.component';
 import { HeaderComponent } from '../components/header/header.component';
+import { ToastComponent } from '../../shared/components/toast/toast.component';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-admin-layout',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, SidebarComponent, HeaderComponent],
+  imports: [CommonModule, RouterOutlet, SidebarComponent, HeaderComponent, ToastComponent, ConfirmDialogComponent],
   template: `
+    <app-toast></app-toast>
+    <app-confirm-dialog></app-confirm-dialog>
     <div class="flex h-screen bg-surface overflow-hidden">
       <!-- Sidebar -->
       <app-sidebar [isCollapsed]="isSidebarCollapsed"></app-sidebar>

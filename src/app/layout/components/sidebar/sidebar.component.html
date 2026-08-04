@@ -1,0 +1,45 @@
+<div [ngClass]="isCollapsed ? 'w-20' : 'w-64'" class="h-full bg-white flex flex-col z-20 transition-all duration-300 whitespace-nowrap border-r border-border shadow-sm">
+  
+  <!-- Logo Area -->
+  <div class="flex items-center justify-center h-16 px-6 shrink-0">
+    <div class="flex items-center justify-center w-full">
+      <img src="/logo_livre_auto.png" alt="Livre Auto" class="h-10 w-auto object-contain">
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="flex-1 overflow-y-auto py-4 px-0 overflow-x-hidden space-y-1">
+    
+    <ng-container *ngFor="let item of menuItems">
+      <a [routerLink]="item.route" 
+         routerLinkActive="bg-primary/5 text-primary border-primary font-semibold" 
+         #rla="routerLinkActive"
+         [routerLinkActiveOptions]="{exact: item.exact || false}"
+         [title]="isCollapsed ? item.label : ''"
+         [ngClass]="[
+           isCollapsed ? 'justify-center px-0' : 'px-6',
+           !rla.isActive ? 'border-transparent text-on-surface-variant hover:bg-surface-container hover:text-on-surface font-medium' : ''
+         ]"
+         class="group flex items-center h-12 rounded-none transition-all duration-200 cursor-pointer border-l-[3px]">
+        
+        <lucide-icon [name]="item.icon" [size]="18" [strokeWidth]="rla.isActive ? 2.5 : 2"
+                     class="transition-colors shrink-0" 
+                     [ngClass]="rla.isActive ? 'text-primary' : 'text-on-surface-variant group-hover:text-on-surface'"
+                     [class.mr-4]="!isCollapsed">
+        </lucide-icon>
+        
+        <span *ngIf="!isCollapsed" class="text-sm truncate">{{ item.label }}</span>
+      </a>
+    </ng-container>
+  </div>
+
+  <!-- Footer Action -->
+  <div class="border-t border-border/50">
+    <button (click)="logout()" [title]="isCollapsed ? 'Déconnexion' : ''" 
+            [ngClass]="isCollapsed ? 'justify-center px-0' : 'px-6'"
+            class="flex items-center w-full h-14 text-sm font-medium text-on-surface-variant rounded-none hover:bg-error/10 hover:text-error transition-all duration-200 group border-l-[3px] border-transparent hover:border-error">
+      <lucide-icon name="log-out" [size]="20" [strokeWidth]="2" class="group-hover:text-error shrink-0" [ngClass]="{'mr-4': !isCollapsed}"></lucide-icon>
+      <span *ngIf="!isCollapsed">Déconnexion</span>
+    </button>
+  </div>
+</div>

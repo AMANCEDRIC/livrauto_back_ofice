@@ -3,53 +3,66 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { InputComponent } from '../../../shared/components/ui/input/input.component';
+import { ButtonComponent } from '../../../shared/components/ui/button/button.component';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, InputComponent, ButtonComponent, LucideAngularModule],
   template: `
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-8">
+    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
       
-      <div class="space-y-6">
-        <div>
-          <label for="email" class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">
-            Adresse Email
-          </label>
-          <div class="relative">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70 text-[20px]">mail</span>
-            <input id="email" name="email" type="email" [(ngModel)]="email"
-                   class="block w-full bg-surface-container-low text-on-surface text-sm py-3 pl-10 pr-4 rounded-md border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:shadow-ambient transition-all outline-none"
-                   placeholder="admin@livreauto.com" required>
-          </div>
-        </div>
+      <div class="space-y-5">
+        <app-input
+          id="email"
+          label="Adresse Email"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="admin@livreauto.com"
+          icon="mail"
+          [required]="true"
+        ></app-input>
 
-        <div>
-          <label for="password" class="block text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">
-            Mot de passe
-          </label>
-          <div class="relative">
-            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant opacity-70 text-[20px]">lock</span>
-            <input id="password" name="password" type="password" [(ngModel)]="password"
-                   class="block w-full bg-surface-container-low text-on-surface text-sm py-3 pl-10 pr-4 rounded-md border-b-2 border-transparent focus:border-primary focus:bg-surface-container-lowest focus:shadow-ambient transition-all outline-none"
-                   placeholder="••••••••" required>
-          </div>
-        </div>
+        <app-input
+          id="password"
+          label="Mot de passe"
+          type="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="••••••••"
+          icon="lock"
+          [required]="true"
+        ></app-input>
       </div>
 
-      <div *ngIf="errorMessage" class="bg-error-container border-l-4 border-error p-4 rounded-r-md">
+      <div class="flex items-center justify-between mt-2">
         <div class="flex items-center">
-          <span class="material-symbols-outlined text-error mr-3">error</span>
-          <p class="text-sm text-error font-medium">{{ errorMessage }}</p>
+          <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 rounded border-border text-primary focus:ring-primary-container">
+          <label for="remember-me" class="ml-2 block text-sm text-on-surface-variant font-medium">Se souvenir de moi</label>
+        </div>
+        <div class="text-sm">
+          <a href="#" class="font-semibold text-primary hover:text-primary-container transition-colors">Mot de passe oublié ?</a>
         </div>
       </div>
 
-      <div>
-        <button type="submit" [disabled]="loginForm.invalid || loading"
-                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md text-sm font-bold text-on-primary bg-gradient-to-br from-primary to-primary-container hover:shadow-ambient focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
-          <span *ngIf="loading" class="material-symbols-outlined animate-spin mr-2 text-[20px]">progress_activity</span>
-          {{ loading ? 'Connexion...' : 'Se connecter' }}
-        </button>
+      <div *ngIf="errorMessage" class="bg-error-container border border-error/50 p-4 rounded-lg flex items-start mt-4">
+        <lucide-icon name="alert-circle" [size]="20" class="text-error mr-3 shrink-0 mt-0.5"></lucide-icon>
+        <p class="text-sm text-error font-medium">{{ errorMessage }}</p>
+      </div>
+
+      <div class="pt-4">
+        <app-button
+          type="submit"
+          variant="primary"
+          [block]="true"
+          [disabled]="!!loginForm.invalid"
+          [loading]="loading"
+        >
+          Se connecter
+        </app-button>
       </div>
       
     </form>
