@@ -1,0 +1,83 @@
+<div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-end space-y-4 md:space-y-0">
+  <div>
+    <h1 class="text-2xl font-display font-bold text-on-surface tracking-tight">Paramètres Globaux</h1>
+    <p class="text-sm text-on-surface-variant mt-1">Gérez les configurations générales de la plateforme (commissions, etc.)</p>
+  </div>
+</div>
+
+<div class="bg-surface-container-lowest rounded-card shadow-soft border border-border overflow-hidden">
+  <div class="p-4 bg-surface-container/50 border-b border-border flex justify-between items-center">
+    <div class="flex items-center text-on-surface font-medium text-sm">
+      <lucide-icon name="settings" [size]="18" class="mr-2 text-primary"></lucide-icon>
+      Configuration
+    </div>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse min-w-[800px]">
+      <thead>
+        <tr class="bg-surface-container-lowest text-xs uppercase tracking-wider text-on-surface-variant font-semibold border-b border-border">
+          <th class="px-6 py-4">Paramètre</th>
+          <th class="px-6 py-4">Valeur Actuelle</th>
+          <th class="px-6 py-4">Dernière Modif.</th>
+          <th class="px-6 py-4 text-right">Actions</th>
+        </tr>
+      </thead>
+      
+      <tbody class="divide-y divide-border text-sm">
+        
+        <tr *ngFor="let param of parametres()" class="hover:bg-surface-container/30 transition-colors group">
+          <td class="px-6 py-4">
+            <div class="font-medium text-on-surface">{{ param.cle }}</div>
+            <div class="text-xs text-on-surface-variant mt-1">{{ param.description }}</div>
+          </td>
+          
+          <td class="px-6 py-4">
+            <!-- Mode Lecture -->
+            <div *ngIf="editingParam !== param.id" class="font-bold text-lg text-primary">
+              {{ param.valeur }}
+            </div>
+            <!-- Mode Édition -->
+            <div *ngIf="editingParam === param.id" class="flex items-center">
+              <input type="text" [(ngModel)]="editValue" 
+                class="bg-surface-container border border-outline rounded px-3 py-1.5 w-32 focus:outline-none focus:border-primary text-on-surface">
+            </div>
+          </td>
+          
+          <td class="px-6 py-4 text-xs text-on-surface-variant">
+            <div>{{ param.updatedAt | date:'dd/MM/yyyy HH:mm' }}</div>
+            <div class="mt-0.5">Par {{ param.updatedByNom || 'Système' }}</div>
+          </td>
+          
+          <td class="px-6 py-4 text-right">
+            <button *ngIf="editingParam !== param.id" (click)="startEdit(param)"
+              class="px-3 py-1.5 text-xs font-medium bg-primary-container text-on-primary-container rounded hover:bg-primary-container/80 transition-colors">
+              Modifier
+            </button>
+            <div *ngIf="editingParam === param.id" class="flex justify-end gap-2">
+              <button (click)="cancelEdit()"
+                class="px-3 py-1.5 text-xs font-medium border border-outline text-on-surface rounded hover:bg-surface-container transition-colors">
+                Annuler
+              </button>
+              <button (click)="saveEdit(param)"
+                class="px-3 py-1.5 text-xs font-medium bg-primary text-on-primary rounded hover:bg-primary/90 transition-colors">
+                Enregistrer
+              </button>
+            </div>
+          </td>
+        </tr>
+
+        <!-- Skeleton -->
+        <ng-container *ngIf="loading()">
+          <tr *ngFor="let i of [1,2,3]">
+            <td class="px-6 py-4"><div class="h-4 bg-surface-container rounded animate-pulse w-3/4"></div></td>
+            <td class="px-6 py-4"><div class="h-4 bg-surface-container rounded animate-pulse w-1/2"></div></td>
+            <td class="px-6 py-4"><div class="h-4 bg-surface-container rounded animate-pulse w-2/3"></div></td>
+            <td class="px-6 py-4"><div class="h-6 bg-surface-container rounded animate-pulse w-16 ml-auto"></div></td>
+          </tr>
+        </ng-container>
+
+      </tbody>
+    </table>
+  </div>
+</div>

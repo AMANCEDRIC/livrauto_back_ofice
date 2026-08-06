@@ -1,0 +1,225 @@
+<div class="mb-6 flex flex-col md:flex-row md:justify-between md:items-end space-y-4 md:space-y-0">
+  <div>
+    <h1 class="text-2xl font-display font-bold text-on-surface tracking-tight">Vue Globale Missions</h1>
+    <p class="text-sm text-on-surface-variant mt-1">Supervision de toutes les missions, commandes associées, marchands et livreurs</p>
+  </div>
+  
+  <div class="flex items-center space-x-3">
+    <!-- Tabs pour filtrer par statut -->
+    <div class="flex bg-surface-container-low p-1 rounded-lg border border-border overflow-x-auto max-w-[500px]">
+      <button (click)="setFilter('ALL')" [ngClass]="{'bg-white shadow-sm text-on-surface': filter() === 'ALL', 'text-on-surface-variant hover:text-on-surface': filter() !== 'ALL'}"
+              class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap">
+        Toutes
+      </button>
+      <button (click)="setFilter('CREEE')" [ngClass]="{'bg-white shadow-sm text-on-surface': filter() === 'CREEE', 'text-on-surface-variant hover:text-on-surface': filter() !== 'CREEE'}"
+              class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap">
+        Créées
+      </button>
+      <button (click)="setFilter('EN_COURS')" [ngClass]="{'bg-white shadow-sm text-on-surface': filter() === 'EN_COURS', 'text-on-surface-variant hover:text-on-surface': filter() !== 'EN_COURS'}"
+              class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap">
+        En cours
+      </button>
+      <button (click)="setFilter('TERMINEE')" [ngClass]="{'bg-white shadow-sm text-on-surface': filter() === 'TERMINEE', 'text-on-surface-variant hover:text-on-surface': filter() !== 'TERMINEE'}"
+              class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap">
+        Terminées
+      </button>
+      <button (click)="setFilter('ANNULEE')" [ngClass]="{'bg-white shadow-sm text-on-surface': filter() === 'ANNULEE', 'text-on-surface-variant hover:text-on-surface': filter() !== 'ANNULEE'}"
+              class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all whitespace-nowrap">
+        Annulées
+      </button>
+    </div>
+
+    <!-- Vue Toggle -->
+    <div class="flex bg-surface-container-low p-1 rounded-lg border border-border">
+      <button (click)="viewMode.set('list')" [ngClass]="{'bg-white shadow-sm text-on-surface': viewMode() === 'list', 'text-on-surface-variant hover:text-on-surface': viewMode() !== 'list'}"
+              class="p-1.5 rounded-md transition-all" title="Vue Liste">
+        <lucide-icon name="list" [size]="16"></lucide-icon>
+      </button>
+      <button (click)="viewMode.set('card')" [ngClass]="{'bg-white shadow-sm text-on-surface': viewMode() === 'card', 'text-on-surface-variant hover:text-on-surface': viewMode() !== 'card'}"
+              class="p-1.5 rounded-md transition-all" title="Vue Carte">
+        <lucide-icon name="layout-grid" [size]="16"></lucide-icon>
+      </button>
+    </div>
+
+    <button (click)="loadMissions()" class="flex items-center h-9 px-4 bg-surface-container rounded-lg text-sm font-medium hover:bg-surface-container-high transition-colors border border-border">
+      <lucide-icon name="refresh-cw" [size]="16" class="mr-2 text-on-surface-variant"></lucide-icon>
+      Actualiser
+    </button>
+  </div>
+</div>
+
+<div *ngIf="viewMode() === 'list'" class="bg-surface-container-lowest rounded-card shadow-soft border border-border overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse min-w-[1100px]">
+      <thead>
+        <tr class="bg-surface-container/60 text-[11px] uppercase tracking-wider text-on-surface-variant font-semibold border-b border-border">
+          <th class="px-4 py-2.5">Mission</th>
+          <th class="px-4 py-2.5">Commande Réf.</th>
+          <th class="px-4 py-2.5">Marchand</th>
+          <th class="px-4 py-2.5">Livreur</th>
+          <th class="px-4 py-2.5">Montant</th>
+          <th class="px-4 py-2.5">Statut</th>
+        </tr>
+      </thead>
+      
+      <tbody class="divide-y divide-border text-sm">
+        
+        <tr *ngFor="let m of filteredMissions()" class="hover:bg-surface-container/30 transition-colors group">
+          <td class="px-4 py-2.5">
+            <div class="font-semibold text-on-surface text-xs">#{{ m.missionId }}</div>
+            <div class="text-[11px] text-on-surface-variant mt-0.5 max-w-[160px] truncate" [title]="m.zoneMission">{{ m.zoneMission }}</div>
+            <div class="text-[10px] text-on-surface-variant/70 mt-0.5">{{ m.missionCreatedAt | date:'dd/MM HH:mm' }}</div>
+          </td>
+          
+          <td class="px-4 py-2.5">
+            <div *ngIf="m.commandeReference" class="font-medium text-primary text-xs">#{{ m.commandeReference }}</div>
+            <div *ngIf="!m.commandeReference" class="text-on-surface-variant italic text-xs">Non liée</div>
+            <div *ngIf="m.commandeStatut" class="text-[10px] text-on-surface-variant mt-0.5">{{ m.commandeStatut }}</div>
+          </td>
+          
+          <td class="px-4 py-2.5">
+            <div *ngIf="m.merchantNom">
+              <div class="font-medium text-on-surface text-xs">{{ m.merchantNom }}</div>
+              <div class="text-[10px] text-on-surface-variant mt-0.5">{{ m.merchantTelephone }}</div>
+            </div>
+            <div *ngIf="!m.merchantNom" class="text-on-surface-variant italic text-[11px]">—</div>
+          </td>
+          
+          <td class="px-4 py-2.5">
+            <div *ngIf="m.livreurNom">
+              <div class="font-medium text-on-surface text-xs">{{ m.livreurNom }}</div>
+              <div class="text-[10px] text-on-surface-variant mt-0.5">{{ m.livreurTelephone }}</div>
+            </div>
+            <div *ngIf="!m.livreurNom" class="text-on-surface-variant italic text-[11px]">Non assigné</div>
+          </td>
+
+          <td class="px-4 py-2.5 font-semibold text-on-surface text-xs">
+            {{ m.montantEstime ? (m.montantEstime | currency:'XOF':'symbol':'1.0-0') : '—' }}
+          </td>
+
+          <td class="px-4 py-2.5">
+            <span [ngClass]="{
+              'bg-blue-100 text-blue-700':      m.missionStatut === 'CREEE',
+              'bg-amber-100 text-amber-700':    m.missionStatut === 'EN_COURS',
+              'bg-emerald-100 text-emerald-700': m.missionStatut === 'TERMINEE',
+              'bg-red-100 text-red-700':        m.missionStatut === 'ANNULEE',
+              'bg-purple-100 text-purple-700':  m.missionStatut === 'EN_ATTENTE',
+              'bg-slate-100 text-slate-600':    !['CREEE','EN_COURS','TERMINEE','ANNULEE','EN_ATTENTE'].includes(m.missionStatut)
+            }" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">
+              {{ m.missionStatut | titlecase }}
+            </span>
+          </td>
+        </tr>
+
+        <!-- Vide -->
+        <tr *ngIf="!loading() && filteredMissions().length === 0">
+          <td colspan="6" class="px-4 py-10 text-center text-on-surface-variant">
+            <lucide-icon name="map" [size]="28" class="mx-auto mb-2 opacity-40"></lucide-icon>
+            <p class="text-sm">Aucune mission trouvée pour ce statut.</p>
+          </td>
+        </tr>
+
+        <!-- Skeleton -->
+        <ng-container *ngIf="loading()">
+          <tr *ngFor="let i of [1,2,3,4,5]">
+            <td class="px-4 py-2.5"><div class="h-3 bg-surface-container rounded animate-pulse w-20 mb-1"></div><div class="h-2.5 bg-surface-container rounded animate-pulse w-28"></div></td>
+            <td class="px-4 py-2.5"><div class="h-3 bg-surface-container rounded animate-pulse w-20"></div></td>
+            <td class="px-4 py-2.5"><div class="h-3 bg-surface-container rounded animate-pulse w-24"></div></td>
+            <td class="px-4 py-2.5"><div class="h-3 bg-surface-container rounded animate-pulse w-24"></div></td>
+            <td class="px-4 py-2.5"><div class="h-3 bg-surface-container rounded animate-pulse w-14"></div></td>
+            <td class="px-4 py-2.5"><div class="h-5 bg-surface-container rounded-full animate-pulse w-18"></div></td>
+          </tr>
+        </ng-container>
+
+      </tbody>
+    </table>
+  </div>
+  
+  <!-- Pagination simple statique pour l'UI -->
+  <div *ngIf="!loading() && filteredMissions().length > 0" class="p-4 border-t border-border flex flex-col sm:flex-row items-center justify-between bg-surface-container-lowest text-sm text-on-surface-variant gap-4">
+    <div>Affichage 1 à {{ filteredMissions().length }} sur {{ filteredMissions().length }} missions</div>
+    <div class="flex items-center space-x-1">
+      <button class="w-8 h-8 flex items-center justify-center rounded border border-border hover:bg-surface-container-low transition-colors">
+        <lucide-icon name="chevron-left" [size]="16"></lucide-icon>
+      </button>
+      <button class="w-8 h-8 flex items-center justify-center rounded bg-primary-container text-white font-semibold">1</button>
+      <button class="w-8 h-8 flex items-center justify-center rounded border border-border hover:bg-surface-container-low transition-colors disabled:opacity-50" disabled>
+        <lucide-icon name="chevron-right" [size]="16"></lucide-icon>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- VUE CARTE (GRID) -->
+<div *ngIf="viewMode() === 'card'" class="space-y-6">
+  <div *ngIf="!loading() && filteredMissions().length === 0" class="bg-surface-container-lowest rounded-card border border-border p-12 text-center text-on-surface-variant">
+    <lucide-icon name="map" [size]="32" class="mx-auto mb-3 opacity-40"></lucide-icon>
+    <p>Aucune mission trouvée pour ce statut.</p>
+  </div>
+
+  <div *ngIf="!loading() && filteredMissions().length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div *ngFor="let m of filteredMissions()" class="bg-surface-container-lowest rounded-card shadow-soft border border-border p-4 hover:border-primary/30 transition-colors flex flex-col">
+      <div class="flex justify-between items-start mb-3">
+        <div>
+          <div class="font-bold text-on-surface text-sm">#{{ m.missionId }}</div>
+          <div class="text-[11px] text-on-surface-variant mt-0.5 truncate max-w-[200px]" [title]="m.zoneMission">{{ m.zoneMission }}</div>
+        </div>
+        <span [ngClass]="{
+          'bg-blue-100 text-blue-700':      m.missionStatut === 'CREEE',
+          'bg-amber-100 text-amber-700':    m.missionStatut === 'EN_COURS',
+          'bg-emerald-100 text-emerald-700': m.missionStatut === 'TERMINEE',
+          'bg-red-100 text-red-700':        m.missionStatut === 'ANNULEE',
+          'bg-purple-100 text-purple-700':  m.missionStatut === 'EN_ATTENTE',
+          'bg-slate-100 text-slate-600':    !['CREEE','EN_COURS','TERMINEE','ANNULEE','EN_ATTENTE'].includes(m.missionStatut)
+        }" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide">
+          {{ m.missionStatut | titlecase }}
+        </span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mb-4 flex-grow">
+        <div>
+          <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-semibold mb-1">Marchand</div>
+          <div class="text-xs font-medium text-on-surface truncate">{{ m.merchantNom || '—' }}</div>
+          <div class="text-[10px] text-on-surface-variant">{{ m.merchantTelephone }}</div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase tracking-wider text-on-surface-variant font-semibold mb-1">Livreur</div>
+          <div class="text-xs font-medium text-on-surface truncate">{{ m.livreurNom || 'Non assigné' }}</div>
+          <div class="text-[10px] text-on-surface-variant">{{ m.livreurTelephone }}</div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-border flex justify-between items-center">
+        <div>
+          <div class="text-[10px] text-on-surface-variant">Commande: <span class="font-medium text-primary">{{ m.commandeReference ? '#' + m.commandeReference : 'Non liée' }}</span></div>
+        </div>
+        <div class="font-bold text-on-surface text-sm">
+          {{ m.montantEstime ? (m.montantEstime | currency:'XOF':'symbol':'1.0-0') : '—' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading()" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+    <div *ngFor="let i of [1,2,3,4,5,6]" class="bg-surface-container-lowest rounded-card border border-border p-4 h-[160px] animate-pulse flex flex-col justify-between">
+      <div class="flex justify-between">
+        <div>
+          <div class="h-4 bg-surface-container rounded w-20 mb-2"></div>
+          <div class="h-3 bg-surface-container rounded w-32"></div>
+        </div>
+        <div class="h-5 bg-surface-container rounded-full w-16"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <div class="h-3 bg-surface-container rounded w-16 mb-2"></div>
+          <div class="h-3 bg-surface-container rounded w-24"></div>
+        </div>
+        <div>
+          <div class="h-3 bg-surface-container rounded w-16 mb-2"></div>
+          <div class="h-3 bg-surface-container rounded w-24"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -57,3 +57,61 @@ export interface AdminVirement {
   dateVirement: string | null;
   createdAt: string;
 }
+
+export interface AdminMission {
+  missionId: number;
+  missionStatut: string;
+  zoneMission: string;
+  montantEstime: number;
+  missionCreatedAt: string;
+  commandeId: number;
+  commandeReference: string;
+  commandeStatut: string;
+  merchantNom: string;
+  merchantTelephone: string;
+  livreurNom: string;
+  livreurTelephone: string;
+}
+
+export interface AdminUserAffiliation {
+  id: number;
+  userId: number;
+  nom: string;
+  prenom: string;
+  telephone: string;
+  role: string;
+  statutAffiliation: string;
+  acceptedAt: string | null;
+}
+
+export interface AdminUserDetails {
+  id: number;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  role: string;
+  statut: string;
+  createdAt: string;
+  affiliations: AdminUserAffiliation[];
+}
+
+export interface AdminActionLog {
+  id: number;
+  action: string;
+  entityType: string;
+  entityId: number;
+  details: string;
+  performedByNom: string;
+  performedByEmail: string;
+  createdAt: string;
+}
+
+export interface AdminParametre {
+  id: number;
+  cle: string;
+  valeur: string;
+  description: string;
+  updatedByNom: string;
+  updatedAt: string;
+}

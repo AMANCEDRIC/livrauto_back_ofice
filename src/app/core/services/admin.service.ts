@@ -2,7 +2,11 @@ import { Injectable, inject } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AdminStats, Utilisateur, AdminPaiement, AdminVirement, StatutPaiement, StatutVirement, ApiResponse } from '../models/admin.model';
+import { 
+  AdminStats, Utilisateur, AdminPaiement, AdminVirement, 
+  StatutPaiement, StatutVirement, AdminMission, AdminUserDetails, 
+  AdminActionLog, AdminParametre, ApiResponse 
+} from '../models/admin.model';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +58,40 @@ export class AdminService {
 
   relancerVirement(id: number): Observable<AdminVirement> {
     return this.api.post<ApiResponse<AdminVirement>>(`/admin/virements/${id}/relancer`, {}).pipe(
+      map(res => res.data)
+    );
+  }
+
+  // Missions & Commandes Global
+  getMissions(): Observable<AdminMission[]> {
+    return this.api.get<ApiResponse<AdminMission[]>>('/admin/missions').pipe(
+      map(res => res.data)
+    );
+  }
+
+  // Détails Utilisateur
+  getUserDetails(id: number): Observable<AdminUserDetails> {
+    return this.api.get<ApiResponse<AdminUserDetails>>(`/admin/utilisateurs/${id}`).pipe(
+      map(res => res.data)
+    );
+  }
+
+  // Action Logs (Traces)
+  getLogs(): Observable<AdminActionLog[]> {
+    return this.api.get<ApiResponse<AdminActionLog[]>>('/admin/logs').pipe(
+      map(res => res.data)
+    );
+  }
+
+  // Paramètres
+  getParametres(): Observable<AdminParametre[]> {
+    return this.api.get<ApiResponse<AdminParametre[]>>('/admin/parametres').pipe(
+      map(res => res.data)
+    );
+  }
+
+  updateParametre(id: number, valeur: string): Observable<AdminParametre> {
+    return this.api.put<ApiResponse<AdminParametre>>(`/admin/parametres/${id}`, { valeur }).pipe(
       map(res => res.data)
     );
   }

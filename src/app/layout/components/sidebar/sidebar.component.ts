@@ -23,14 +23,11 @@ export class SidebarComponent {
   
   menuItems: MenuItem[] = [
     { label: 'Dashboard', route: '/admin/dashboard', icon: 'layout-dashboard', exact: true },
-    // { label: 'Commandes', route: '/admin/commandes', icon: 'shopping-bag' },
-    // { label: 'Missions', route: '/admin/missions', icon: 'map' },
+    { label: 'Missions', route: '/admin/missions', icon: 'map' },
     { label: 'Utilisateurs', route: '/admin/utilisateurs', icon: 'users' },
     { label: 'Paiements', route: '/admin/paiements', icon: 'credit-card' },
-    // { label: 'Commissions', route: '/admin/commissions', icon: 'percent' },
-    // { label: 'Notifications', route: '/admin/notifications', icon: 'bell' },
-    // { label: 'Statistiques', route: '/admin/statistiques', icon: 'bar-chart-3' },
-    // { label: 'Paramètres', route: '/admin/parametres', icon: 'settings' }
+    { label: 'Audit & Logs', route: '/admin/logs', icon: 'activity' },
+    { label: 'Paramètres', route: '/admin/parametres', icon: 'settings' }
   ];
 
   logout() {

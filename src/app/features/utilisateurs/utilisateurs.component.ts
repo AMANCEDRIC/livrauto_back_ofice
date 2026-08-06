@@ -5,13 +5,14 @@ import { Utilisateur } from '../../core/models/admin.model';
 import { ToastService } from '../../shared/services/toast.service';
 import { ConfirmDialogService } from '../../shared/services/confirm-dialog.service';
 import { LucideAngularModule } from 'lucide-angular';
+import { RouterModule } from '@angular/router';
 
 type UserStatus = 'EN_ATTENTE' | 'ACTIF' | 'INACTIF';
 
 @Component({
   selector: 'app-utilisateurs',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule, RouterModule],
   templateUrl: './utilisateurs.component.html'
 })
 export class UtilisateursComponent implements OnInit {

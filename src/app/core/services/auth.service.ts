@@ -55,6 +55,13 @@ export class AuthService {
     );
   }
 
+  resend2Fa(): Observable<any> {
+    if (!this.pendingEmailFor2FA) {
+      throw new Error("Aucun email en attente pour le 2FA");
+    }
+    return this.api.post('/auth/resend-2fa', { email: this.pendingEmailFor2FA });
+  }
+
   private handleAuthSuccess(userData: any) {
     localStorage.setItem('token', userData.token);
     // On retire le token de l'objet utilisateur stocké

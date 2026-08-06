@@ -53,6 +53,17 @@ import { AuthService } from '../../../core/services/auth.service';
         </button>
       </div>
       
+      <div class="mt-4 text-center">
+        <p class="text-xs text-on-surface-variant font-medium">
+          Vous n'avez pas reçu le code ? 
+          <button type="button" (click)="resendCode()" [disabled]="resendLoading || resendCooldown > 0"
+                  class="text-primary hover:text-primary-container transition-colors disabled:opacity-50 font-bold ml-1">
+            <span *ngIf="resendLoading" class="material-symbols-outlined animate-spin align-middle text-[14px]">progress_activity</span>
+            {{ resendCooldown > 0 ? 'Renvoyer dans ' + resendCooldown + 's' : 'Renvoyer' }}
+          </button>
+        </p>
+      </div>
+
     </form>
   `
 })
@@ -63,6 +74,10 @@ export class VerifyOtpComponent {
   otpArray: string[] = ['', '', '', '', '', ''];
   loading = false;
   errorMessage = '';
+  
+  resendLoading = false;
+  resendCooldown = 0;
+  private cooldownInterval: any;
 
   constructor() {
     if (!this.authService.pendingEmailFor2FA) {
@@ -133,6 +148,36 @@ export class VerifyOtpComponent {
         this.errorMessage = err.error?.message || 'Code OTP invalide';
       }
     });
+  }
+  
+  resendCode() {
+    if (this.resendCooldown > 0 || this.resendLoading) return;
+    
+    this.resendLoading = true;
+    this.errorMessage = '';
+    
+    this.authService.resend2Fa().subscribe({
+      next: () => {
+        this.resendLoading = false;
+        this.startCooldown();
+      },
+      error: (err) => {
+        this.resendLoading = false;
+        this.errorMessage = err.error?.message || 'Erreur lors du renvoi du code';
+      }
+    });
+  }
+
+  private startCooldown() {
+    this.resendCooldown = 30; // 30 seconds cooldown
+    if (this.cooldownInterval) clearInterval(this.cooldownInterval);
+    
+    this.cooldownInterval = setInterval(() => {
+      this.resendCooldown--;
+      if (this.resendCooldown <= 0) {
+        clearInterval(this.cooldownInterval);
+      }
+    }, 1000);
   }
 
   cancel() {

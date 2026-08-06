@@ -115,10 +115,17 @@
           </td>
           
           <!-- Actions -->
-          <td class="py-4 px-6 text-right">
-            <button class="p-1 text-on-surface-variant hover:text-primary transition-colors">
-              <lucide-icon name="more-vertical" [size]="18"></lucide-icon>
-            </button>
+          <td class="px-6 py-4 text-right">
+            <div class="flex items-center justify-end space-x-3">
+              <a [routerLink]="['/admin/utilisateurs', user.id]" 
+                class="px-3 py-1 text-xs font-medium bg-surface-container hover:bg-surface-container-high text-on-surface rounded transition-colors flex items-center">
+                <lucide-icon name="eye" [size]="14" class="mr-1"></lucide-icon>
+                Détails
+              </a>
+              <button class="text-on-surface-variant hover:text-on-surface transition-colors">
+                <lucide-icon name="more-vertical" [size]="20"></lucide-icon>
+              </button>
+            </div>
           </td>
         </tr>
         

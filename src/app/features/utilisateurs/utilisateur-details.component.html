@@ -1,0 +1,110 @@
+<div class="mb-8 flex items-center space-x-4">
+  <a routerLink="/admin/utilisateurs" class="p-2 rounded-full hover:bg-surface-container transition-colors text-on-surface-variant hover:text-on-surface">
+    <lucide-icon name="arrow-left" [size]="20"></lucide-icon>
+  </a>
+  <div>
+    <h1 class="text-2xl font-display font-bold text-on-surface tracking-tight">Détails de l'utilisateur</h1>
+  </div>
+</div>
+
+<ng-container *ngIf="loading()">
+  <!-- Skeleton -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-1 h-64 bg-surface-container rounded-card animate-pulse"></div>
+    <div class="md:col-span-2 h-96 bg-surface-container rounded-card animate-pulse"></div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="user() as u">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <!-- Left Column: Profile Card -->
+    <div class="md:col-span-1 flex flex-col gap-6">
+      <div class="bg-surface-container-lowest rounded-card shadow-soft border border-border p-6 text-center">
+        <div class="w-24 h-24 bg-primary-container rounded-full flex items-center justify-center mx-auto mb-4">
+          <lucide-icon [name]="u.role === 'MERCHANT' ? 'store' : 'bike'" [size]="40" class="text-primary"></lucide-icon>
+        </div>
+        
+        <h2 class="text-xl font-bold text-on-surface">{{ u.nom }} {{ u.prenom }}</h2>
+        <p class="text-sm text-on-surface-variant mb-4">{{ u.role === 'MERCHANT' ? 'Marchand / Patron' : 'Livreur' }}</p>
+        
+        <div class="flex justify-center mb-6">
+          <span [class]="'px-3 py-1 rounded-full text-xs font-semibold ' + (u.statut === 'ACTIF' ? 'bg-success/20 text-success' : 'bg-warning/20 text-warning')">
+            {{ u.statut }}
+          </span>
+        </div>
+        
+        <div class="space-y-3 text-left border-t border-border pt-4">
+          <div class="flex items-center text-sm text-on-surface-variant">
+            <lucide-icon name="mail" [size]="16" class="mr-3"></lucide-icon>
+            {{ u.email }}
+          </div>
+          <div class="flex items-center text-sm text-on-surface-variant">
+            <lucide-icon name="phone" [size]="16" class="mr-3"></lucide-icon>
+            {{ u.telephone }}
+          </div>
+          <div class="flex items-center text-sm text-on-surface-variant">
+            <lucide-icon name="calendar" [size]="16" class="mr-3"></lucide-icon>
+            Inscrit le {{ u.createdAt | date:'dd/MM/yyyy' }}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Column: Affiliations -->
+    <div class="md:col-span-2 flex flex-col gap-6">
+      
+      <div class="bg-surface-container-lowest rounded-card shadow-soft border border-border">
+        <div class="p-4 border-b border-border bg-surface-container/30">
+          <h3 class="text-lg font-semibold text-on-surface flex items-center">
+            <lucide-icon name="users" [size]="20" class="mr-2 text-primary"></lucide-icon>
+            {{ u.role === 'MERCHANT' ? 'Livreurs Affiliés' : 'Marchands (Patrons)' }}
+          </h3>
+          <p class="text-xs text-on-surface-variant mt-1">
+            {{ u.role === 'MERCHANT' ? 'Liste des livreurs rattachés à ce marchand' : 'Liste des marchands auxquels ce livreur est rattaché' }}
+          </p>
+        </div>
+        
+        <div class="p-0">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-surface-container/20 text-xs uppercase text-on-surface-variant font-semibold border-b border-border">
+                <th class="px-6 py-3">Nom</th>
+                <th class="px-6 py-3">Téléphone</th>
+                <th class="px-6 py-3">Statut Affiliation</th>
+                <th class="px-6 py-3">Depuis le</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border text-sm">
+              <tr *ngFor="let aff of u.affiliations" class="hover:bg-surface-container/30 transition-colors">
+                <td class="px-6 py-4 font-medium text-on-surface">
+                  {{ aff.nom }} {{ aff.prenom }}
+                </td>
+                <td class="px-6 py-4 text-on-surface-variant">
+                  {{ aff.telephone }}
+                </td>
+                <td class="px-6 py-4">
+                  <span class="px-2 py-1 rounded text-xs font-semibold bg-surface-container text-on-surface-variant">
+                    {{ aff.statutAffiliation }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-on-surface-variant">
+                  {{ aff.acceptedAt ? (aff.acceptedAt | date:'dd/MM/yyyy') : '-' }}
+                </td>
+              </tr>
+              
+              <tr *ngIf="!u.affiliations || u.affiliations.length === 0">
+                <td colspan="4" class="px-6 py-8 text-center text-on-surface-variant">
+                  <lucide-icon name="user-minus" [size]="24" class="mx-auto mb-2 opacity-50"></lucide-icon>
+                  Aucune affiliation.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+    </div>
+    
+  </div>
+</ng-container>

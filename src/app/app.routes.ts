@@ -5,7 +5,11 @@ import { VerifyOtpComponent } from './features/auth/verify-otp/verify-otp.compon
 import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
 import { DashboardComponent } from './features/dashboard/dashboard.component';
 import { UtilisateursComponent } from './features/utilisateurs/utilisateurs.component';
+import { UtilisateurDetailsComponent } from './features/utilisateurs/utilisateur-details.component';
 import { PaiementsComponent } from './features/paiements/paiements.component';
+import { MissionsComponent } from './features/missions/missions.component';
+import { LogsComponent } from './features/logs/logs.component';
+import { ParametresComponent } from './features/parametres/parametres.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
@@ -25,7 +29,11 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'utilisateurs', component: UtilisateursComponent },
+      { path: 'utilisateurs/:id', component: UtilisateurDetailsComponent },
+      { path: 'missions', component: MissionsComponent },
       { path: 'paiements', component: PaiementsComponent },
+      { path: 'logs', component: LogsComponent },
+      { path: 'parametres', component: ParametresComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     ]
   },
