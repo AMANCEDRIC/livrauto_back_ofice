@@ -4,6 +4,14 @@ export interface ApiResponse<T> {
   data: T;
 }
 
+export interface PagedResponse<T> {
+  items: T[];
+  totalElements: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
+
 export interface AdminStats {
   totalMarchands: number;
   totalLivreurs: number;
@@ -114,4 +122,48 @@ export interface AdminParametre {
   description: string;
   updatedByNom: string;
   updatedAt: string;
+}
+
+export interface AdminCommandeResume {
+  id: number;
+  reference: string;
+  statut: string;
+  clientNom: string;
+  clientTelephone: string;
+  adresseLivraison: string;
+  montantColis: number;
+  fraisLivraison: number;
+  commissionPlateforme: number;
+  montantTotal: number;
+  createdAt: string;
+}
+
+export interface AdminMissionDetails {
+  id: number;
+  reference: string;
+  titre: string;
+  description: string;
+  statut: string;
+  dateDepart: string | null;
+  dateArrivee: string | null;
+  createdAt: string;
+  merchantId: number;
+  merchantNom: string;
+  merchantTelephone: string;
+  livreurId: number | null;
+  livreurNom: string | null;
+  livreurTelephone: string | null;
+  // Résumé financier
+  totalCommandes: number;
+  resumeColisLivres: number;
+  resumeColisEchoues: number;
+  resumeEspecesCollectees: number;
+  resumeARemettreAuMarchand: number;
+  resumeGainsLivreur: number;
+  resumeGainsPlateforme: number;
+  montantTotalCommandes: number;
+  totalCommissionPlateforme: number;
+  totalFraisLivraison: number;
+  // Liste des commandes
+  commandes: AdminCommandeResume[];
 }

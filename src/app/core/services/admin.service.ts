@@ -5,7 +5,8 @@ import { map } from 'rxjs/operators';
 import { 
   AdminStats, Utilisateur, AdminPaiement, AdminVirement, 
   StatutPaiement, StatutVirement, AdminMission, AdminUserDetails, 
-  AdminActionLog, AdminParametre, ApiResponse 
+  AdminActionLog, AdminParametre, ApiResponse, AdminMissionDetails,
+  PagedResponse
 } from '../models/admin.model';
 
 @Injectable({
@@ -20,8 +21,9 @@ export class AdminService {
     );
   }
 
-  getUtilisateurs(): Observable<Utilisateur[]> {
-    return this.api.get<ApiResponse<Utilisateur[]>>('/admin/utilisateurs').pipe(
+  getUtilisateurs(page: number = 1, size: number = 10, filter: string = 'ALL'): Observable<PagedResponse<Utilisateur>> {
+    const url = `/admin/utilisateurs?page=${page}&size=${size}&filter=${filter}`;
+    return this.api.get<ApiResponse<PagedResponse<Utilisateur>>>(url).pipe(
       map(res => res.data)
     );
   }
@@ -62,9 +64,16 @@ export class AdminService {
     );
   }
 
-  // Missions & Commandes Global
-  getMissions(): Observable<AdminMission[]> {
-    return this.api.get<ApiResponse<AdminMission[]>>('/admin/missions').pipe(
+  // Missions
+  getMissions(page: number = 1, size: number = 10, filter: string = 'ALL'): Observable<PagedResponse<AdminMission>> {
+    const url = `/admin/missions?page=${page}&size=${size}&filter=${filter}`;
+    return this.api.get<ApiResponse<PagedResponse<AdminMission>>>(url).pipe(
+      map(res => res.data)
+    );
+  }
+
+  getMissionDetails(id: number): Observable<AdminMissionDetails> {
+    return this.api.get<ApiResponse<AdminMissionDetails>>(`/admin/missions/${id}`).pipe(
       map(res => res.data)
     );
   }

@@ -8,6 +8,7 @@ import { UtilisateursComponent } from './features/utilisateurs/utilisateurs.comp
 import { UtilisateurDetailsComponent } from './features/utilisateurs/utilisateur-details.component';
 import { PaiementsComponent } from './features/paiements/paiements.component';
 import { MissionsComponent } from './features/missions/missions.component';
+import { MissionDetailsComponent } from './features/missions/mission-details.component';
 import { LogsComponent } from './features/logs/logs.component';
 import { ParametresComponent } from './features/parametres/parametres.component';
 import { authGuard } from './core/guards/auth.guard';
@@ -31,6 +32,7 @@ export const routes: Routes = [
       { path: 'utilisateurs', component: UtilisateursComponent },
       { path: 'utilisateurs/:id', component: UtilisateurDetailsComponent },
       { path: 'missions', component: MissionsComponent },
+      { path: 'missions/:id', component: MissionDetailsComponent },
       { path: 'paiements', component: PaiementsComponent },
       { path: 'logs', component: LogsComponent },
       { path: 'parametres', component: ParametresComponent },
